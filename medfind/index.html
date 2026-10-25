@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedFind - Medicine Availability Network</title>
+  <meta name="description" content="Search medicines across participating pharmacies, check stock levels, timestamps, alternatives, and explore full pharmacy inventories." />
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Optional modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Global Header -->
+  <header class="top-header">
+    <div class="header-container">
+      <div class="brand-section" onclick="location.reload()">
+        <div class="brand-icon">
+          <span>✚</span>
+        </div>
+        <div>
+          <div class="brand-title">
+            <span>MedFind</span>
+            <span class="brand-badge">Network</span>
+          </div>
+          <div class="brand-subtitle">Real-time Medicine Availability & Pharmacy Network</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Location Selector & GPS -->
+        <div class="location-picker">
+          <span style="font-size: 1rem">📍</span>
+          <span style="color: var(--neutral-500); font-weight: 500">Location:</span>
+          <select id="locationSelect" aria-label="Select location area"></select>
+          <button class="gps-btn" id="gpsBtn" title="Detect your exact location with device GPS">
+            📍 Use GPS
+          </button>
+        </div>
+
+        <button class="btn-ghost-sm" id="resetDataBtn" title="Restore fresh seed data">
+          ↺ Reset Demo Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="main-nav">
+    <div class="nav-container">
+      <button class="nav-tab active" data-tab="search">
+        <span>🔍</span>
+        <span>Find Medicine</span>
+      </button>
+
+      <button class="nav-tab" data-tab="pharmacies">
+        <span>🏥</span>
+        <span>Pharmacies Directory</span>
+        <span class="nav-badge-pill-new">New</span>
+      </button>
+
+      <button class="nav-tab" data-tab="alerts">
+        <span>🔔</span>
+        <span>My Alerts</span>
+      </button>
+
+      <button class="nav-tab" data-tab="portal">
+        <span>💼</span>
+        <span>Pharmacy Portal</span>
+        <span class="nav-badge">12 Stores</span>
+      </button>
+
+      <button class="nav-tab" data-tab="admin">
+        <span>🛡️</span>
+        <span>Admin Verification</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: FIND MEDICINE -->
+    <!-- ========================================== -->
+    <section class="tab-panel active" id="tab-search">
+      <div class="hero-search-box">
+        <div class="search-title-row">
+          <h1 class="search-title">Search for a Medicine across Participating Pharmacies</h1>
+          <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: var(--neutral-700)">
+            <input type="checkbox" id="stockFilterToggle" />
+            <span>Show In-Stock Only</span>
+          </label>
+        </div>
+
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="mainSearchInput"
+            class="main-search-input"
+            placeholder="Search by brand name (e.g., Crocin, Augmentin) or active salt (e.g., Paracetamol, Atorvastatin)..."
+            autocomplete="off"
+            autofocus
+          />
+          <button class="search-clear-btn" id="searchClearBtn" style="display: none;" title="Clear search">✕</button>
+        </div>
+
+        <!-- Category Pills -->
+        <div class="quick-chips-row" id="categoryChips"></div>
+
+        <!-- Popular Quick Searches -->
+        <div class="quick-suggestions">
+          <span style="font-weight: 600">Popular:</span>
+          <button class="suggest-btn" data-search="Paracetamol">Paracetamol</button>
+          <button class="suggest-btn" data-search="Crocin 500">Crocin 500</button>
+          <button class="suggest-btn" data-search="Augmentin 625">Augmentin 625</button>
+          <button class="suggest-btn" data-search="Pantop 40">Pantop 40</button>
+          <button class="suggest-btn" data-search="Metformin">Metformin</button>
+          <button class="suggest-btn" data-search="Atorvastatin">Atorvastatin</button>
+          <button class="suggest-btn" data-search="Inhaler">Inhaler</button>
+          <button class="suggest-btn" data-search="Cetzine 10">Cetzine 10</button>
+        </div>
+      </div>
+
+      <!-- Results Container -->
+      <div id="searchResultsContainer"></div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: PHARMACIES DIRECTORY (NEW FEATURE) -->
+    <!-- ========================================== -->
+    <section class="tab-panel" id="tab-pharmacies">
+      <div class="pharmacy-directory-header">
+        <h1 style="font-size: 1.45rem; font-weight: 800; color: var(--neutral-900)">
+          🏥 Participating Pharmacies Directory & Live Inventories
+        </h1>
+        <p style="font-size: 0.9rem; color: var(--neutral-600); margin-top: 0.25rem">
+          Search for a specific pharmacy in your city, inspect its full catalogue of medicines, check live stock status, prices, and operating hours.
+        </p>
+
+        <div class="pharmacy-search-inputs">
+          <input
+            type="text"
+            id="pharmacySearchInput"
+            class="pharmacy-search-input"
+            placeholder="Search pharmacies by name, neighborhood, street address..."
+          />
+          <select class="pharmacy-filter-select" id="pharmacyFilterSelect">
+            <option value="all">All Pharmacies (12)</option>
+            <option value="24x7">Open 24/7 Only</option>
+            <option value="delivery">Home Delivery Available</option>
+            <option value="verified">Verified Partners Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Two-Pane Layout: Left List + Right Inventory Viewer -->
+      <div class="pharmacies-layout">
+        <!-- Left: Pharmacies List -->
+        <aside class="pharmacies-sidebar" id="pharmaciesListContainer"></aside>
+
+        <!-- Right: Selected Pharmacy Full Inventory Viewer -->
+        <section class="pharmacy-inventory-pane" id="pharmacyInventoryPane"></section>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: MY ALERTS -->
+    <!-- ========================================== -->
+    <section class="tab-panel" id="tab-alerts"></section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: PHARMACY PORTAL -->
+    <!-- ========================================== -->
+    <section class="tab-panel" id="tab-portal"></section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: ADMIN VERIFICATION -->
+    <!-- ========================================== -->
+    <section class="tab-panel" id="tab-admin"></section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODALS -->
+  <!-- ========================================== -->
+
+  <!-- Modal 1: Stock History -->
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">📈 Stock Update Audit History</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="historyModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Update Stock (Pharmacy Portal) -->
+  <div class="modal-overlay" id="updateStockModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">📦 Update Stock Status</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="updateStockModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add New Medicine -->
+  <div class="modal-overlay" id="addMedicineModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">✚ Register New Medicine</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="addMedicineModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Register Pharmacy -->
+  <div class="modal-overlay" id="registerPharmacyModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">🏥 Register Participating Pharmacy</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="registerPharmacyModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div style="max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem">
+      <div>
+        <strong>MedFind</strong> — Decentralized Medicine Availability Network
+      </div>
+      <div>
+        Demo Logins: <code>demo1@medfind.test</code> to <code>demo12@medfind.test</code> (Password: <code>demo1234</code>) • Admin Key: <code>admin123</code>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
